@@ -1,0 +1,10 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Welkom, <b>@context.User.Identity.Name</b></h3>
+    </Authorized>
+</AuthorizeView>

@@ -1,0 +1,87 @@
+﻿@page "/shoeOverview"
+@using Gimpies_Blazor1.Database.Data
+@using Gimpies_Blazor1.Database.Models.Entities
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<PageTitle>Schoenenoverzicht</PageTitle>
+
+<h3>Schoenenoverzicht</h3>
+
+<AuthorizeView Policy="@UserPolicy.View_Shoes">
+    <ChildContent>
+        @if (shoes == null)
+        {
+            <p>Het overzicht wordt geladen...</p>
+        }
+
+        else if (shoes.Count == 0)
+        {
+            <p>Er zijn geen schoenen beschikbaar</p>
+            <AuthorizeView Policy="@UserPolicy.Add_Shoes">
+            <ChildContent Context="AddShoesIfEmptyContext">
+            <button type="button" class="btn btn-primary" @onclick="OpenAddShoeDialog">Schoen toevoegen</button>
+            </ChildContent>
+            </AuthorizeView>      }
+        else
+        {
+            <table class=" table">
+                <thead>
+                    <tr>
+                        <th>Merk</th>
+                        <th>Model</th>
+                        <th>Kleur</th>
+                        <th>Maat</th>
+                        <th>Prijs</th>
+                        <AuthorizeView Policy="@UserPolicy.Edit_Shoes">
+                            <ChildContent Context="EditShoesContext">
+                                <th></th>
+                            </ChildContent>
+                        </AuthorizeView>
+                        <AuthorizeView Policy="@UserPolicy.Delete_Shoes">
+                            <ChildContent Context="DeleteShoesContext">
+                                <th></th>
+                            </ChildContent>
+                        </AuthorizeView>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var shoe in shoes)
+                    {
+                        <tr>
+                            <td>@shoe.Brand.BrandName</td>
+                            <td>@shoe.Model.ModelName</td>
+                            <td>@shoe.Colour.ColourName</td>
+                            <td>@shoe.Size.SizeValue</td>
+                            <td>€@shoe.Value</td>
+                            <AuthorizeView Policy="@UserPolicy.Edit_Shoes">
+                                <ChildContent Context="EditShoesContext">
+                                </ChildContent>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="@UserPolicy.Delete_Shoes">
+                                <ChildContent Context="DeleteShoesContext">
+                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="OpenDeleteShoeDialog">Verwijderen</MudButton>
+                                </ChildContent>
+                            </AuthorizeView>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <AuthorizeView Policy="@UserPolicy.Add_Shoes">
+                <ChildContent Context="AddShoesFooterContext">
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenAddShoeDialog">Schoen toevoegen</MudButton>
+                </ChildContent>
+            </AuthorizeView>
+        }
+    </ChildContent>
+</AuthorizeView>
+
+
+
+
+
+
+

@@ -1,0 +1,71 @@
+﻿@page "/userOverviewAdmin"
+@using Gimpies_Blazor1.Database.Data
+@using Gimpies_Blazor1.Database.Models.Entities
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>Gebruikersoverzicht</PageTitle>
+
+
+<h3>Gebruikersoverzicht</h3>
+
+
+<AuthorizeView Policy="@UserPolicy.View_Users">
+    <ChildContent>
+        @if (users == null)
+        {
+            <p>Het overzicht wordt geladen...</p>
+        }
+
+        else if (users.Count == 0)
+        {
+            <p>Er zijn geen medewerkers</p>
+            <button type="button" class="btn btn-primary">Medewerker toevoegen</button>
+        }
+        else
+        {
+            <table class=" table">
+                <thead>
+                    <tr>
+                        <th>Gebruikersnaam</th>
+                        <th>Wachtwoord</th>
+                        <th>Rol</th>
+                        <AuthorizeView Policy="@UserPolicy.Edit_Users">
+                            <ChildContent Context="editContext">
+                                <th></th>
+                            </ChildContent>
+                        </AuthorizeView>
+                        <AuthorizeView Policy="@UserPolicy.Delete_Users">
+                            <ChildContent Context="deleteContext">
+                                <th></th>
+                            </ChildContent>
+                        </AuthorizeView>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in users)
+                    {
+                        <tr>
+                            <td>@user.Username</td>
+                            <td>@user.PasswordHashed</td>
+                            <td>@user.Role.RoleName</td>
+                            <AuthorizeView Policy="@UserPolicy.Edit_Users">
+                                <ChildContent Context="editContext">
+                                </ChildContent>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="@UserPolicy.Delete_Users">
+                                <ChildContent Context="deleteContext">
+                                </ChildContent>
+                            </AuthorizeView>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-primary">Medewerker toevoegen</button>
+
+        }
+    </ChildContent>
+</AuthorizeView>
+
