@@ -8,17 +8,6 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
 {
     public partial class AddShoe
     {
-
-        protected override async Task OnInitializedAsync()
-        {
-            shoes = await DbContext.Shoes
-                .Include(s => s.Brand)
-                .Include(s => s.Model)
-                .Include(s => s.Colour)
-                .Include(s => s.Size)
-                .ToListAsync();
-        }
-
         private string? errorMessage;
         private List<Shoe> shoes;
         private Shoe newShoe = new Shoe()
@@ -29,7 +18,15 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
             Size = new Size()
         };
 
-        
+        protected override async Task OnInitializedAsync()
+        {
+            shoes = await DbContext.Shoes
+                .Include(s => s.Brand)
+                .Include(s => s.Model)
+                .Include(s => s.Colour)
+                .Include(s => s.Size)
+                .ToListAsync();
+        }
 
         private async Task HandleAddShoe()
         {

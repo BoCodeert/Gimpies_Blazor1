@@ -40,7 +40,7 @@ namespace Gimpies_Blazor1.Components.Pages
 
             //if (!result.Canceled) // Verwijder de schoen als de gebruiker bevestigt
             //{
-                await DeleteShoe(shoeToDelete);
+            await DeleteShoe(shoeToDelete);
             //}
         }
         private async Task DeleteShoe(Shoe shoe)
@@ -53,6 +53,11 @@ namespace Gimpies_Blazor1.Components.Pages
                 .Include(s => s.Colour)
                 .Include(s => s.Size)
                 .ToListAsync(); // Verfris de lijst met schoenen na verwijderen
+        }
+
+        private async Task OpenEditShoeDialog(Shoe shoe)
+        {
+            Navigation.NavigateTo($"/editShoe/{shoe.ShoeId}");
         }
     }
 }

@@ -59,6 +59,8 @@
                             <td>€@shoe.Value</td>
                             <AuthorizeView Policy="@UserPolicy.Edit_Shoes">
                                 <ChildContent Context="EditShoesContext">
+                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenEditShoeDialog(shoe)">Bewerken</MudButton>
+
                                 </ChildContent>
                             </AuthorizeView>
                             <AuthorizeView Policy="@UserPolicy.Delete_Shoes">
