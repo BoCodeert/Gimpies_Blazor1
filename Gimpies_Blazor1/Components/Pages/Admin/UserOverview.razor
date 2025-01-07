@@ -1,4 +1,4 @@
-﻿@page "/userOverviewAdmin"
+﻿@page "/userOverview"
 @using Gimpies_Blazor1.Database.Data
 @using Gimpies_Blazor1.Database.Models.Entities
 @using Microsoft.EntityFrameworkCore
@@ -58,7 +58,7 @@
                             <td>@user.Role.RoleName</td>
                             <AuthorizeView Policy="@UserPolicy.Edit_Users">
                                 <ChildContent Context="editUserContext">
-                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenEditUserDialog()">Bewerken</MudButton>
+                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenEditUserDialog(user)">Bewerken</MudButton>
                                 </ChildContent>
                             </AuthorizeView>
                             <AuthorizeView Policy="@UserPolicy.Delete_Users">

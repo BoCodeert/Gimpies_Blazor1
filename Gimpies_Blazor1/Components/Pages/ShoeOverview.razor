@@ -36,6 +36,7 @@
                         <th>Kleur</th>
                         <th>Maat</th>
                         <th>Prijs</th>
+                        <th>Aantal</th>
                         <AuthorizeView Policy="@UserPolicy.Edit_Shoes">
                             <ChildContent Context="EditShoesContext">
                                 <th></th>
@@ -57,6 +58,7 @@
                             <td>@shoe.Colour.ColourName</td>
                             <td>@shoe.Size.SizeValue</td>
                             <td>€@shoe.Value</td>
+                            <td>@shoe.Unit</td>
                             <AuthorizeView Policy="@UserPolicy.Edit_Shoes">
                                 <ChildContent Context="EditShoesContext">
                                     <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenEditShoeDialog(shoe)">Bewerken</MudButton>

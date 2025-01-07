@@ -21,9 +21,9 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
             Navigation.NavigateTo("/addUser");
         }
 
-        private async Task OpenEditUserDialog()
+        private async Task OpenEditUserDialog(User user)
         {
-            Navigation.NavigateTo("/editUser");
+            Navigation.NavigateTo($"/editUser/{user.Userid}");
         }
 
         private async Task OpenDeleteUserDialog(User user)

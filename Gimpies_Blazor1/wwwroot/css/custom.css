@@ -1,0 +1,10 @@
+﻿body {
+}
+
+.voorraad-laag {
+    background-color: #ffffe0; /* Lichtgeel */
+}
+
+.voorraad-nul {
+    background-color: #ffcccb; /* Lichtrood */
+}

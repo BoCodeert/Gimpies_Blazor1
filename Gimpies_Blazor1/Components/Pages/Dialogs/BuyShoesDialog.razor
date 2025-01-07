@@ -1,0 +1,20 @@
+﻿@using Gimpies_Blazor1.Database.Models.Entities
+@using Gimpies_Blazor1.Database.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<MudDialog>
+    <DialogContent>
+        <h3>Schoenen inkopen</h3>
+        <MudTextField @bind-Value="Quantity" Label="Aantal schoenen" Required="true" min="0" Type="number" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Submit" Color="Color.Primary">Inkopen</MudButton>
+        <MudButton OnClick="Cancel" Color="Color.Secondary">Annuleren</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
