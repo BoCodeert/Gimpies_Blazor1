@@ -7,6 +7,7 @@ namespace Gimpies_Blazor1.Components.Pages
     public partial class ShoeOverview
     {
         private List<Shoe> shoes;
+        private Shoe shoeToDelete;
 
         protected override async Task OnInitializedAsync()
         {
@@ -20,33 +21,38 @@ namespace Gimpies_Blazor1.Components.Pages
 
         private async Task OpenAddShoeDialog()
         {
-
-
+            Navigation.NavigateTo("/addShoe");
         }
 
-        private async Task OpenDeleteShoeDialog()
+        private async Task OpenDeleteShoeDialog(Shoe shoe)
         {
+            shoeToDelete = shoe;
 
-            var parameters = new DialogParameters
-            {
-                { nameof(ConfirmDialog.ContentText), "Weet u zeker dat u deze schoen wilt verwijderen?" },
-                { nameof(ConfirmDialog.ButtonText), "Verwijderen" },
-                { nameof(ConfirmDialog.Color), Color.Error }
-            };
-
-            DialogService.Show<ConfirmDialog>("Bevestiging", parameters);
-
-            var dialogresult = await DialogService.ShowAsync<ConfirmDialog>("Confirm", parameters);
-            var result = await dialogresult.Result;
-
-            //if (!result)
+            //var parameters = new DialogParameters
             //{
-            //    return;
+            //    { nameof(ConfirmDialog.ContentText), "Weet je zeker dat je deze schoen wilt verwijderen?" },
+            //    { nameof(ConfirmDialog.ButtonText), "Verwijderen" },
+            //    { nameof(ConfirmDialog.Color), Color.Error }
+            //};
+
+            //var dialog = DialogService.Show<ConfirmDialog>("Bevestiging", parameters);
+            //var result = await dialog.Result;
+
+            //if (!result.Canceled) // Verwijder de schoen als de gebruiker bevestigt
+            //{
+                await DeleteShoe(shoeToDelete);
             //}
         }
-        private void DeleteShoe()
+        private async Task DeleteShoe(Shoe shoe)
         {
-
+            DbContext.Shoes.Remove(shoe);
+            await DbContext.SaveChangesAsync();
+            shoes = await DbContext.Shoes
+                .Include(s => s.Brand)
+                .Include(s => s.Model)
+                .Include(s => s.Colour)
+                .Include(s => s.Size)
+                .ToListAsync(); // Verfris de lijst met schoenen na verwijderen
         }
     }
 }

@@ -63,7 +63,7 @@
                             </AuthorizeView>
                             <AuthorizeView Policy="@UserPolicy.Delete_Shoes">
                                 <ChildContent Context="DeleteShoesContext">
-                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="OpenDeleteShoeDialog">Verwijderen</MudButton>
+                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenDeleteShoeDialog(shoe)">Verwijderen</MudButton>
                                 </ChildContent>
                             </AuthorizeView>
                         </tr>
