@@ -14,6 +14,7 @@
 
 <AuthorizeView Policy="@UserPolicy.View_Users">
     <ChildContent>
+
         @if (users == null)
         {
             <p>Het overzicht wordt geladen...</p>
@@ -22,7 +23,11 @@
         else if (users.Count == 0)
         {
             <p>Er zijn geen medewerkers</p>
-            <button type="button" class="btn btn-primary">Medewerker toevoegen</button>
+            <AuthorizeView Policy="@UserPolicy.Add_Users">
+                <ChildContent Context="AddUsersIfEmptyContext">
+                    <button type="button" class="btn btn-primary" @onclick="OpenAddUserDialog">Medewerker toevoegen</button>
+                </ChildContent>
+            </AuthorizeView>
         }
         else
         {
@@ -33,12 +38,12 @@
                         <th>Wachtwoord</th>
                         <th>Rol</th>
                         <AuthorizeView Policy="@UserPolicy.Edit_Users">
-                            <ChildContent Context="editContext">
+                            <ChildContent Context="editUserContext">
                                 <th></th>
                             </ChildContent>
                         </AuthorizeView>
                         <AuthorizeView Policy="@UserPolicy.Delete_Users">
-                            <ChildContent Context="deleteContext">
+                            <ChildContent Context="deleteUserContext">
                                 <th></th>
                             </ChildContent>
                         </AuthorizeView>
@@ -52,19 +57,24 @@
                             <td>@user.PasswordHashed</td>
                             <td>@user.Role.RoleName</td>
                             <AuthorizeView Policy="@UserPolicy.Edit_Users">
-                                <ChildContent Context="editContext">
+                                <ChildContent Context="editUserContext">
+                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenEditUserDialog()">Bewerken</MudButton>
                                 </ChildContent>
                             </AuthorizeView>
                             <AuthorizeView Policy="@UserPolicy.Delete_Users">
-                                <ChildContent Context="deleteContext">
+                                <ChildContent Context="deleteUserContext">
+                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenDeleteUserDialog(user)">Verwijderen</MudButton>
                                 </ChildContent>
                             </AuthorizeView>
                         </tr>
                     }
                 </tbody>
             </table>
-            <button type="button" class="btn btn-primary">Medewerker toevoegen</button>
-
+            <AuthorizeView Policy="@UserPolicy.Add_Users">
+                <ChildContent Context="AddUserFooterContext">
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenAddUserDialog">Medewerker toevoegen</MudButton>
+                </ChildContent>
+            </AuthorizeView>
         }
     </ChildContent>
 </AuthorizeView>
