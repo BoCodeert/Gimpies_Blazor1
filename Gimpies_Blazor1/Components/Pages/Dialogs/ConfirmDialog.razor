@@ -1,0 +1,96 @@
+﻿@using Gimpies_Blazor1.Database.Models.Entities
+@using Gimpies_Blazor1.Database.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<MudDialog>
+    <DialogContent>
+        @if (ActionType == "SellShoe")
+        {
+            <p>Hoeveel paar @Shoe.Unit.ToString() @Shoe.Brand.BrandName @Shoe.Model.ModelName wil je verkopen?</p>
+            <MudTextField @bind-Value="Quantity" Label="Aantal" Type="number" Required="true" Min="0" />
+        }
+        else if (ActionType == "BuyShoe")
+        {
+            <p>Hoeveel paar @Shoe.Brand.BrandName @Shoe.Model.ModelName wil je inkopen?</p>
+            <MudTextField @bind-Value="Quantity" Label="Aantal" Type="number" Required="true" Min="0" />
+        }
+        else if (ActionType == "DeleteShoe")
+        {
+            <p>Weet je zeker dat je @Shoe.Brand.BrandName @Shoe.Model.ModelName wilt verwijderen?</p>
+        }
+        else if (ActionType == "AddShoe")
+        {
+            <MudTextField @bind-Value="newShoe.Brand.BrandName" Label="Merk" required="true" />
+            <MudTextField @bind-Value="newShoe.Model.ModelName" Label="Model" required="true" />
+            <MudTextField @bind-Value="newShoe.Colour.ColourName" Label="Kleur" required="true" />
+            <MudNumericField @bind-Value="newShoe.Size.SizeValue" Label="Maat" T="decimal" required="true" Min="34" Max="50" Step="0.5m" />
+            <MudNumericField @bind-Value="newShoe.Value" Label="Prijs (€)" T="decimal" required="true" Min="0" Step="0.001m" />
+
+        }
+        else if (ActionType == "Edit")
+        {
+            <MudTextField @bind-Value="Shoe.Brand.BrandName" Label="Merk" Required="true" />
+            <MudTextField @bind-Value="Shoe.Model.ModelName" Label="Model" Required="true" />
+            <MudTextField @bind-Value="Shoe.Colour.ColourName" Label="Kleur" Required="true" />
+            <MudNumericField @bind-Value="Shoe.Size.SizeValue" Label="Maat" T="decimal" Required="true" Min="34" Max="50" Step="0.5m" />
+            <MudNumericField @bind-Value="Shoe.Value" Label="Prijs (€)" T="decimal" Required="true" Min="0" Step="0.001m" />
+        }
+        else if (ActionType == "AddUser")
+        {
+            @if (roles == null || roles.Count == 0)
+            {
+                <MudText Typo="Typo.h6">Functies laden...</MudText>
+            }
+            else
+            {
+                <MudTextField @bind-Value="newUser.Username" Label="Gebruikersnaam" Required="true" />
+                <MudTextField @bind-Value="newUser.PasswordHashed" Label="Wachtwoord" Required="true" />
+                <MudSelect @bind-Value="newUser.fk_UserRoleID" Label="Rol" Required="true">
+                    @foreach (var role in roles)
+                    {
+                        <MudSelectItem Value="role.RoleId">@role.RoleName</MudSelectItem>
+                    }
+                </MudSelect>
+            }
+        }
+        else if (ActionType == "EditUser")
+        {
+            @if (roles == null || roles.Count == 0)
+            {
+                <MudText Typo="Typo.h6">Functies laden...</MudText>
+            }
+            else
+            {
+                <MudTextField @bind-Value="newUser.Username" Label="Gebruikersnaam" Required="true" />
+                <MudTextField @bind-Value="newUser.PasswordHashed" Label="Wachtwoord" Required="true" />
+                <MudSelect @bind-Value="newUser.fk_UserRoleID" Label="Rol" Required="true">
+                    @foreach (var role in roles)
+                    {
+                        <MudSelectItem Value="role.RoleId">@role.RoleName</MudSelectItem>
+                    }
+                </MudSelect>
+            }
+
+        }
+        else if (ActionType == "DeleteUser")
+        {
+            <p>Weet je zeker dat je @newUser.Username wilt verwijderen?</p>
+        }
+        else
+        {
+            <h3>Onbekend</h3>
+            <p>Hoe ben je hier gekomen?...</p>
+        }
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Submit" Color="Color.Primary">@ButtonText</MudButton>
+        <MudButton OnClick="Cancel" Color="Color.Secondary">Annuleren</MudButton>
+    </DialogActions>
+</MudDialog>
+
+

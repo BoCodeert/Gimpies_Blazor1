@@ -5,6 +5,7 @@
 @inject ApplicationDbContext DbContext
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @rendermode InteractiveServer
 
 <PageTitle>Schoenenoverzicht</PageTitle>
@@ -47,12 +48,22 @@
                                 <th></th>
                             </ChildContent>
                         </AuthorizeView>
+                        <AuthorizeView Policy="@UserPolicy.Buy_Shoes">
+                            <ChildContent Context="BuyShoesContext">
+                                <th></th>
+                            </ChildContent>
+                        </AuthorizeView>
+                        <AuthorizeView Policy="@UserPolicy.Sell_Shoes">
+                            <ChildContent Context="BuyShoesContext">
+                                <th></th>
+                            </ChildContent>
+                        </AuthorizeView>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var shoe in shoes)
                     {
-                        <tr>
+                        <tr class="@GetRowClass(shoe.Unit)">                           
                             <td>@shoe.Brand.BrandName</td>
                             <td>@shoe.Model.ModelName</td>
                             <td>@shoe.Colour.ColourName</td>
@@ -70,6 +81,21 @@
                                     <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenDeleteShoeDialog(shoe)">Verwijderen</MudButton>
                                 </ChildContent>
                             </AuthorizeView>
+                            <AuthorizeView Policy="@UserPolicy.Buy_Shoes">
+                                <ChildContent Context="BuyShoesContext">
+                                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => OpenBuyShoesDialog(shoe)">
+                                        Inkopen
+                                    </MudButton>
+                                </ChildContent>
+                            </AuthorizeView>
+                            <AuthorizeView Policy="@UserPolicy.Sell_Shoes">
+                                <ChildContent Context="SellShoesContext">
+                                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => OpenSellShoesDialog(shoe)">
+                                        Verkopen
+                                    </MudButton>
+                                </ChildContent>
+                            </AuthorizeView>
+
                         </tr>
                     }
                 </tbody>
@@ -79,6 +105,14 @@
                     <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenAddShoeDialog">Schoen toevoegen</MudButton>
                 </ChildContent>
             </AuthorizeView>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">
+                    @errorMessage
+                </div>
+            }
+
         }
     </ChildContent>
 </AuthorizeView>
