@@ -67,6 +67,14 @@ namespace Gimpies_Blazor1.Database.Data
                 .HasOne(up => up.Role)
                 .WithMany(r => r.Policies)
                 .HasForeignKey(up => up.fk_UserRoleID);
+
+            modelBuilder.Entity<SalesTransaction>()
+                .HasKey(st => st.TransactionId); // Stelt TransactionId expliciet in als primary key
+
+            modelBuilder.Entity<SalesTransaction>()
+                .HasOne(st => st.Shoe)
+                .WithMany(s => s.SalesTransactions)
+                .HasForeignKey(st => st.ShoeId);
         }
 
 
@@ -79,6 +87,8 @@ namespace Gimpies_Blazor1.Database.Data
         public DbSet<Colour> Colours { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<UserPolicy> UserPolicies { get; set; }
+        public DbSet<SalesTransaction> SalesTransactions { get; set; }
+
 
     }
 }

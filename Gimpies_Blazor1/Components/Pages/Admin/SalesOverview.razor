@@ -1,0 +1,22 @@
+﻿@page "/salesOverview"
+
+@using Gimpies_Blazor1.Database.Models.Entities
+@using Gimpies_Blazor1.Database.Data
+@using Microsoft.EntityFrameworkCore
+@using MudBlazor.Charts
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@rendermode InteractiveServer
+
+<AuthorizeView Policy="@UserPolicy.Add_Users">
+    <ChildContent>
+        <PageTitle>Verkoopoverzicht</PageTitle>
+        <h3>Verkoopoverzicht</h3>
+        <p><strong>Meest verkochte schoen:</strong> @mostSoldShoe</p>
+        <p><strong>Minst verkochte schoen:</strong> @leastSoldShoe</p>
+        <p><strong>Totale omzet:</strong> @totalSales.ToString("C")</p>
+    </ChildContent>
+
+
+</AuthorizeView>

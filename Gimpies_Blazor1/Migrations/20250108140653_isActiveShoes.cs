@@ -5,24 +5,25 @@
 namespace Gimpies_Blazor1.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRolesandPolicies3 : Migration
+    public partial class isActiveShoes : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "RoleId",
-                table: "Roles",
-                newName: "fk_UserRoleID");
+            migrationBuilder.AddColumn<bool>(
+                name: "isActive",
+                table: "Shoes",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.RenameColumn(
-                name: "fk_UserRoleID",
-                table: "Roles",
-                newName: "RoleId");
+            migrationBuilder.DropColumn(
+                name: "isActive",
+                table: "Shoes");
         }
     }
 }

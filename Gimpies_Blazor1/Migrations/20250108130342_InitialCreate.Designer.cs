@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gimpies_Blazor1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241210132136_AddRolesandPolicies")]
-    partial class AddRolesandPolicies
+    [Migration("20250108130342_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -195,21 +195,21 @@ namespace Gimpies_Blazor1.Migrations
                             Userid = 1,
                             PasswordHashed = "1",
                             Username = "admin",
-                            fk_UserRoleID = 0
+                            fk_UserRoleID = 1
                         },
                         new
                         {
                             Userid = 2,
                             PasswordHashed = "1",
                             Username = "buyer",
-                            fk_UserRoleID = 0
+                            fk_UserRoleID = 2
                         },
                         new
                         {
                             Userid = 3,
                             PasswordHashed = "1",
                             Username = "seller",
-                            fk_UserRoleID = 0
+                            fk_UserRoleID = 3
                         });
                 });
 
@@ -270,26 +270,54 @@ namespace Gimpies_Blazor1.Migrations
                         {
                             Id = 5,
                             IsEnabled = true,
+                            PolicyName = "View_Users",
+                            fk_UserRoleID = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            IsEnabled = true,
+                            PolicyName = "Add_Users",
+                            fk_UserRoleID = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            IsEnabled = true,
+                            PolicyName = "Edit_Users",
+                            fk_UserRoleID = 1
+                        },
+                        new
+                        {
+                            Id = 8,
+                            IsEnabled = true,
+                            PolicyName = "Delete_Users",
+                            fk_UserRoleID = 1
+                        },
+                        new
+                        {
+                            Id = 9,
+                            IsEnabled = true,
                             PolicyName = "View_Shoes",
                             fk_UserRoleID = 2
                         },
                         new
                         {
-                            Id = 6,
+                            Id = 10,
                             IsEnabled = true,
                             PolicyName = "Buy_Shoes",
                             fk_UserRoleID = 2
                         },
                         new
                         {
-                            Id = 7,
+                            Id = 11,
                             IsEnabled = true,
                             PolicyName = "View_Shoes",
                             fk_UserRoleID = 3
                         },
                         new
                         {
-                            Id = 8,
+                            Id = 12,
                             IsEnabled = true,
                             PolicyName = "Sell_Shoes",
                             fk_UserRoleID = 3

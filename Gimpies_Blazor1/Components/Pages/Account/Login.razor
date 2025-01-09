@@ -9,6 +9,7 @@
 @using Microsoft.AspNetCore.Http
 @inject ApplicationDbContext dbContext
 @inject NavigationManager navigationManager
+@attribute [ExcludeFromInteractiveRouting]
 
 <div class="row">
     <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">

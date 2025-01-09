@@ -34,6 +34,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddMudServices();
 builder.Services.AddHttpContextAccessor();
 
+
 var app = builder.Build();
 
 var cultureInfo = new CultureInfo("nl-NL");

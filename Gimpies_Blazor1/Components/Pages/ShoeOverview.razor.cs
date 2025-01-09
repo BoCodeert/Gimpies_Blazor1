@@ -22,6 +22,7 @@ namespace Gimpies_Blazor1.Components.Pages
         protected override async Task OnInitializedAsync()
         {
             shoes = await DbContext.Shoes
+                .Where(s => s.isActive)
                 .Include(s => s.Brand)
                 .Include(s => s.Model)
                 .Include(s => s.Colour)
@@ -43,11 +44,13 @@ namespace Gimpies_Blazor1.Components.Pages
 
             if (!result.Canceled)
             {
+                newShoe = (Shoe)result.Data;
                 await HandleAddShoe();
             }
         }
         private async Task HandleAddShoe()
         {
+
             // Controleer op duplicaten
             var duplicate = await DbContext.Shoes.AnyAsync(s =>
                 s.Brand.BrandName == newShoe.Brand.BrandName &&
@@ -57,6 +60,32 @@ namespace Gimpies_Blazor1.Components.Pages
 
             if (duplicate)
             {
+                var existingShoe = await DbContext.Shoes
+                    .FirstOrDefaultAsync(s =>
+                    s.Brand.BrandName == newShoe.Brand.BrandName &&
+                    s.Model.ModelName == newShoe.Model.ModelName &&
+                    s.Colour.ColourName == newShoe.Colour.ColourName &&
+                    s.Size.SizeValue == newShoe.Size.SizeValue);
+
+                if (existingShoe != null)
+                {
+                    // Als de schoen inactief is, maak het dan actief
+                    if (existingShoe.isActive == false)
+                    {
+                        existingShoe.isActive = true;
+                        DbContext.Update(existingShoe); // Update de bestaande schoen in de database
+                        await DbContext.SaveChangesAsync();
+                        shoes = await DbContext.Shoes
+                .Where(s => s.isActive)
+                .Include(s => s.Brand)
+                .Include(s => s.Model)
+                .Include(s => s.Colour)
+                .Include(s => s.Size)
+                .ToListAsync();// Sla de wijziging op in de database
+                        Snackbar.Add("Schoen geheractiveerd!", Severity.Success);
+                    }
+
+                }
                 errorMessage = "Een schoen met dezelfde specificaties bestaat al.";
                 return;
             }
@@ -93,9 +122,13 @@ namespace Gimpies_Blazor1.Components.Pages
         }
         private async Task DeleteShoe(Shoe shoe)
         {
-            DbContext.Shoes.Remove(shoe);
+
+            shoe.isActive = false;
+
+            DbContext.Shoes.Update(shoe);
             await DbContext.SaveChangesAsync();
             shoes = await DbContext.Shoes
+                .Where(s => s.isActive)
                 .Include(s => s.Brand)
                 .Include(s => s.Model)
                 .Include(s => s.Colour)
@@ -142,6 +175,16 @@ namespace Gimpies_Blazor1.Components.Pages
                 shoe.Unit -= quantity;
 
                 DbContext.Shoes.Update(shoe);
+
+                var saleTransaction = new SalesTransaction
+                {
+                    ShoeId = shoe.ShoeId,
+                    Quantity = quantity,
+                    Price = shoe.Value,  // De prijs per paar schoen
+                    Date = DateTime.Now
+                };
+                DbContext.SalesTransactions.Add(saleTransaction);
+
                 await DbContext.SaveChangesAsync();
 
                 // Optioneel: een notificatie tonen
@@ -227,6 +270,32 @@ namespace Gimpies_Blazor1.Components.Pages
 
             if (duplicate)
             {
+                var existingShoe = await DbContext.Shoes
+                       .FirstOrDefaultAsync(s =>
+                           s.Brand.BrandName == newShoe.Brand.BrandName &&
+                           s.Model.ModelName == newShoe.Model.ModelName &&
+                           s.Colour.ColourName == newShoe.Colour.ColourName &&
+                           s.Size.SizeValue == newShoe.Size.SizeValue);
+
+                if (existingShoe != null)
+                {
+                    // Als de schoen inactief is, maak het dan actief
+                    if (existingShoe.isActive == false)
+                    {
+                        existingShoe.isActive = true;
+                        DbContext.Update(existingShoe); // Update de bestaande schoen in de database
+                        await DbContext.SaveChangesAsync();
+                        shoes = await DbContext.Shoes
+                .Where(s => s.isActive)
+                .Include(s => s.Brand)
+                .Include(s => s.Model)
+                .Include(s => s.Colour)
+                .Include(s => s.Size)
+                .ToListAsync();// Sla de wijziging op in de database
+                        Snackbar.Add("Schoen geheractiveerd!", Severity.Success);
+                    }
+
+                }
                 errorMessage = "Een schoen met dezelfde specificaties bestaat al.";
                 return;
             }
@@ -253,19 +322,19 @@ namespace Gimpies_Blazor1.Components.Pages
         }
 
 
-        private string GetRowClass(int voorraad)
+        private string GetStockClass(int unit)
         {
-            if (voorraad == 0)
+            if (unit == 0)
             {
-                return "voorraad-nul";
+                return "shoe-item-outofstock";
             }
-            else if (voorraad > 0 && voorraad <= 5)
+            else if (unit > 0 && unit <= 5)
             {
-                return "voorraad-laag";
+                return "shoe-item-lowstock";
             }
             else
             {
-                return string.Empty;
+                return "";
             }
         }
     }

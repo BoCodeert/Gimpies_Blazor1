@@ -61,6 +61,17 @@
                 </div>
             </Authorized>
         </AuthorizeView>
+
+        <AuthorizeView Policy="@UserPolicy.Add_Users">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="SalesOverview">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Verkoopoverzicht
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
     </nav>
 </div>
+
 

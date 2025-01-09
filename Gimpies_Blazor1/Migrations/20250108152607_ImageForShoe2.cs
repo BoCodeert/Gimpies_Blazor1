@@ -5,7 +5,7 @@
 namespace Gimpies_Blazor1.Migrations
 {
     /// <inheritdoc />
-    public partial class AddRolesandPolicies2 : Migration
+    public partial class ImageForShoe2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -2,10 +2,12 @@
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Gimpies_Blazor1.Migrations
 {
     /// <inheritdoc />
-    public partial class IntitalCreate : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -50,6 +52,19 @@ namespace Gimpies_Blazor1.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.RoleId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sizes",
                 columns: table => new
                 {
@@ -63,17 +78,45 @@ namespace Gimpies_Blazor1.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserPolicies",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    fk_UserRoleID = table.Column<int>(type: "int", nullable: false),
+                    PolicyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserPolicies", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserPolicies_Roles_fk_UserRoleID",
+                        column: x => x.fk_UserRoleID,
+                        principalTable: "Roles",
+                        principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Userid = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHashed = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PasswordHashed = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    fk_UserRoleID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Userid);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_fk_UserRoleID",
+                        column: x => x.fk_UserRoleID,
+                        principalTable: "Roles",
+                        principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -118,6 +161,45 @@ namespace Gimpies_Blazor1.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "RoleId", "RoleName" },
+                values: new object[,]
+                {
+                    { 1, "Admin" },
+                    { 2, "Buyer" },
+                    { 3, "Seller" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserPolicies",
+                columns: new[] { "Id", "IsEnabled", "PolicyName", "fk_UserRoleID" },
+                values: new object[,]
+                {
+                    { 1, true, "View_Shoes", 1 },
+                    { 2, true, "Add_Shoes", 1 },
+                    { 3, true, "Edit_Shoes", 1 },
+                    { 4, true, "Delete_Shoes", 1 },
+                    { 5, true, "View_Users", 1 },
+                    { 6, true, "Add_Users", 1 },
+                    { 7, true, "Edit_Users", 1 },
+                    { 8, true, "Delete_Users", 1 },
+                    { 9, true, "View_Shoes", 2 },
+                    { 10, true, "Buy_Shoes", 2 },
+                    { 11, true, "View_Shoes", 3 },
+                    { 12, true, "Sell_Shoes", 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Userid", "PasswordHashed", "Username", "fk_UserRoleID" },
+                values: new object[,]
+                {
+                    { 1, "1", "admin", 1 },
+                    { 2, "1", "buyer", 2 },
+                    { 3, "1", "seller", 3 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Shoes_BrandId",
                 table: "Shoes",
@@ -137,6 +219,16 @@ namespace Gimpies_Blazor1.Migrations
                 name: "IX_Shoes_SizeId",
                 table: "Shoes",
                 column: "SizeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserPolicies_fk_UserRoleID",
+                table: "UserPolicies",
+                column: "fk_UserRoleID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_fk_UserRoleID",
+                table: "Users",
+                column: "fk_UserRoleID");
         }
 
         /// <inheritdoc />
@@ -144,6 +236,9 @@ namespace Gimpies_Blazor1.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Shoes");
+
+            migrationBuilder.DropTable(
+                name: "UserPolicies");
 
             migrationBuilder.DropTable(
                 name: "Users");
@@ -159,6 +254,9 @@ namespace Gimpies_Blazor1.Migrations
 
             migrationBuilder.DropTable(
                 name: "Sizes");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
         }
     }
 }

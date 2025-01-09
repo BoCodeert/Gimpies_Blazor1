@@ -14,105 +14,73 @@
 
 <AuthorizeView Policy="@UserPolicy.View_Shoes">
     <ChildContent>
+
         @if (shoes == null)
         {
             <p>Het overzicht wordt geladen...</p>
         }
-
         else if (shoes.Count == 0)
         {
             <p>Er zijn geen schoenen beschikbaar</p>
             <AuthorizeView Policy="@UserPolicy.Add_Shoes">
-            <ChildContent Context="AddShoesIfEmptyContext">
-            <button type="button" class="btn btn-primary" @onclick="OpenAddShoeDialog">Schoen toevoegen</button>
-            </ChildContent>
-            </AuthorizeView>      }
-        else
-        {
-            <table class=" table">
-                <thead>
-                    <tr>
-                        <th>Merk</th>
-                        <th>Model</th>
-                        <th>Kleur</th>
-                        <th>Maat</th>
-                        <th>Prijs</th>
-                        <th>Aantal</th>
+                <ChildContent Context="AddShoesIfEmptyContext">
+                    <button type="button" class="btn btn-primary" @onclick="OpenAddShoeDialog">Schoen toevoegen</button>
+                </ChildContent>
+            </AuthorizeView>
+        }
+        else {
+        <div class="shoe-grid">
+            @foreach (var shoe in shoes)
+            {
+                <div class="@GetStockClass(shoe.Unit)">
+                        <div class="shoe-image">
+                            @if (!string.IsNullOrEmpty(shoe.ImageUrl))
+                            {
+                                <img src="@shoe.ImageUrl" alt="Schoen afbeelding" style="width: 100%; height: auto;" />
+                            }
+                            else
+                            {
+                                <span>Geen afbeelding</span>
+                            }
+                        </div>
+                    <div class="shoe-details">
+                        <h5>@shoe.Brand.BrandName - @shoe.Model.ModelName</h5>
+                        <p><strong>Kleur:</strong> @shoe.Colour.ColourName</p>
+                        <p><strong>Maat:</strong> @shoe.Size.SizeValue</p>
+                        <p><strong>Prijs:</strong> €@shoe.Value</p>
+                        <p><strong>Aantal:</strong> @shoe.Unit</p>
+                    </div>
+                    <div class="shoe-actions">
                         <AuthorizeView Policy="@UserPolicy.Edit_Shoes">
                             <ChildContent Context="EditShoesContext">
-                                <th></th>
+                                <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenEditShoeDialog(shoe)">Bewerken</MudButton>
                             </ChildContent>
                         </AuthorizeView>
                         <AuthorizeView Policy="@UserPolicy.Delete_Shoes">
                             <ChildContent Context="DeleteShoesContext">
-                                <th></th>
+                                <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenDeleteShoeDialog(shoe)">Verwijderen</MudButton>
                             </ChildContent>
                         </AuthorizeView>
-                        <AuthorizeView Policy="@UserPolicy.Buy_Shoes">
-                            <ChildContent Context="BuyShoesContext">
-                                <th></th>
-                            </ChildContent>
-                        </AuthorizeView>
-                        <AuthorizeView Policy="@UserPolicy.Sell_Shoes">
-                            <ChildContent Context="BuyShoesContext">
-                                <th></th>
-                            </ChildContent>
-                        </AuthorizeView>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var shoe in shoes)
-                    {
-                        <tr class="@GetRowClass(shoe.Unit)">                           
-                            <td>@shoe.Brand.BrandName</td>
-                            <td>@shoe.Model.ModelName</td>
-                            <td>@shoe.Colour.ColourName</td>
-                            <td>@shoe.Size.SizeValue</td>
-                            <td>€@shoe.Value</td>
-                            <td>@shoe.Unit</td>
-                            <AuthorizeView Policy="@UserPolicy.Edit_Shoes">
-                                <ChildContent Context="EditShoesContext">
-                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenEditShoeDialog(shoe)">Bewerken</MudButton>
-
-                                </ChildContent>
-                            </AuthorizeView>
-                            <AuthorizeView Policy="@UserPolicy.Delete_Shoes">
-                                <ChildContent Context="DeleteShoesContext">
-                                    <MudButton Color="Color.Error" Variant="Variant.Filled" OnClick="() => OpenDeleteShoeDialog(shoe)">Verwijderen</MudButton>
-                                </ChildContent>
-                            </AuthorizeView>
                             <AuthorizeView Policy="@UserPolicy.Buy_Shoes">
                                 <ChildContent Context="BuyShoesContext">
-                                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => OpenBuyShoesDialog(shoe)">
-                                        Inkopen
-                                    </MudButton>
+                                    <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="() => OpenBuyShoesDialog(shoe)">Inkopen</MudButton>
                                 </ChildContent>
                             </AuthorizeView>
                             <AuthorizeView Policy="@UserPolicy.Sell_Shoes">
                                 <ChildContent Context="SellShoesContext">
-                                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="() => OpenSellShoesDialog(shoe)">
-                                        Verkopen
-                                    </MudButton>
+                                    <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="() => OpenSellShoesDialog(shoe)">Verkopen</MudButton>
                                 </ChildContent>
                             </AuthorizeView>
-
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <AuthorizeView Policy="@UserPolicy.Add_Shoes">
-                <ChildContent Context="AddShoesFooterContext">
-                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="OpenAddShoeDialog">Schoen toevoegen</MudButton>
-                </ChildContent>
-            </AuthorizeView>
-
-            @if (!string.IsNullOrEmpty(errorMessage))
-            {
-                <div class="alert alert-danger">
-                    @errorMessage
+                    </div>
                 </div>
             }
 
+        </div>
+            <AuthorizeView Policy="@UserPolicy.Add_Shoes">
+                <ChildContent Context="AddShoesIfEmptyContext">
+                    <button type="button" class="btn btn-primary" @onclick="OpenAddShoeDialog">Schoen toevoegen</button>
+                </ChildContent>
+            </AuthorizeView>
         }
     </ChildContent>
 </AuthorizeView>
