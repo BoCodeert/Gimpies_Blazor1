@@ -13,8 +13,6 @@
         public Size Size { get; set; }
         public decimal Value { get; set; }
         public int Unit { get; set; }
-
-        public string? ImageUrl { get; set; }
         public bool isActive { get; set; } = true;
         public ICollection<SalesTransaction> SalesTransactions { get; set; } 
 

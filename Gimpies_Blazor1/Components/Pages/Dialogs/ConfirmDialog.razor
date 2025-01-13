@@ -29,29 +29,14 @@
             <MudTextField @bind-Value="newShoe.Colour.ColourName" Label="Kleur" required="true" />
             <MudNumericField @bind-Value="newShoe.Size.SizeValue" Label="Maat" T="decimal" required="true" Min="34" Max="50" Step="0.5m" />
             <MudNumericField @bind-Value="newShoe.Value" Label="Prijs (€)" T="decimal" required="true" Min="0" Step="0.001m" />
-            <MudText Typo="Typo.h6">Afbeelding toevoegen</MudText>
-            <InputFile />
-
-            @if (!string.IsNullOrEmpty(newShoe.ImageUrl))
-            {
-                <img src="uploadedImageUrl" alt="Schoen afbeelding" style="max-width: 200px; height: auto;" />
-            }
-
         }
         else if (ActionType == "EditShoe")
         {
-            <MudTextField @bind-Value="Shoe.Brand.BrandName" Label="Merk" Required="true" />
-            <MudTextField @bind-Value="Shoe.Model.ModelName" Label="Model" Required="true" />
-            <MudTextField @bind-Value="Shoe.Colour.ColourName" Label="Kleur" Required="true" />
-            <MudNumericField @bind-Value="Shoe.Size.SizeValue" Label="Maat" T="decimal" Required="true" Min="34" Max="50" Step="0.5m" />
-            <MudNumericField @bind-Value="Shoe.Value" Label="Prijs (€)" T="decimal" Required="true" Min="0" Step="0.001m" />
-            <MudText Typo="Typo.h6">Afbeelding toevoegen</MudText>
-            <InputFile />
-
-            @if (!string.IsNullOrEmpty(newShoe.ImageUrl))
-            {
-                <img src="uploadedImageUrl" alt="Schoen afbeelding" style="max-width: 200px; height: auto;" />
-            }
+            <MudTextField @bind-Value="shoeToEdit.Brand.BrandName" Label="Merk" Required="true" />
+            <MudTextField @bind-Value="shoeToEdit.Model.ModelName" Label="Model" Required="true" />
+            <MudTextField @bind-Value="shoeToEdit.Colour.ColourName" Label="Kleur" Required="true" />
+            <MudNumericField @bind-Value="shoeToEdit.Size.SizeValue" Label="Maat" T="decimal" Required="true" Min="34" Max="50" Step="0.5m" />
+            <MudNumericField @bind-Value="shoeToEdit.Value" Label="Prijs (€)" T="decimal" Required="true" Min="0" Step="0.001m" />
         }
         else if (ActionType == "AddUser")
         {

@@ -30,6 +30,7 @@ namespace Gimpies_Blazor1.Components.Pages.Account
             if (string.IsNullOrEmpty(Model.Username) || string.IsNullOrEmpty(Model.Password))
             {
                 errorMessage = "Gebruikersnaam en wachtwoord zijn vereist.";
+
                 return; // Stop verdergaan als de velden leeg zijn
             }
 

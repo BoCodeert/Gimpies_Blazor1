@@ -30,19 +30,11 @@
         }
         else {
         <div class="shoe-grid">
+           
             @foreach (var shoe in shoes)
             {
+               
                 <div class="@GetStockClass(shoe.Unit)">
-                        <div class="shoe-image">
-                            @if (!string.IsNullOrEmpty(shoe.ImageUrl))
-                            {
-                                <img src="@shoe.ImageUrl" alt="Schoen afbeelding" style="width: 100%; height: auto;" />
-                            }
-                            else
-                            {
-                                <span>Geen afbeelding</span>
-                            }
-                        </div>
                     <div class="shoe-details">
                         <h5>@shoe.Brand.BrandName - @shoe.Model.ModelName</h5>
                         <p><strong>Kleur:</strong> @shoe.Colour.ColourName</p>
@@ -73,7 +65,9 @@
                             </AuthorizeView>
                     </div>
                 </div>
+                
             }
+                
 
         </div>
             <AuthorizeView Policy="@UserPolicy.Add_Shoes">

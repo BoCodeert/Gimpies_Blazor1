@@ -86,8 +86,12 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
 
             if (!result.Canceled)
             {
-                var updatedUser = (User)result.Data;
-                await HandleEditUser(updatedUser);
+                var updatedUser = result.Data as User; // Als je de userId ontvangt als resultaat
+                //var updatedUser = await DbContext.Users.FindAsync(userId); // Haal het volledige User object op
+                if (updatedUser != null)
+                {
+                    await HandleEditUser(updatedUser);
+                }
             }
         }
 
@@ -96,20 +100,24 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
             try
             {
                 var duplicate = await DbContext.Users.AnyAsync(u =>
-                    u.Username == updatedUser.Username);
+                    u.Username == updatedUser.Username && u.Userid != updatedUser.Userid);
                 if (duplicate)
                 {
-                    errorMessage = "Een gebruiker met dezelfde gebruikersnaam bestaat al.";
+                    Snackbar.Add("Een gebruiker met dezelfde gebruikersnaam bestaat al!", Severity.Error);
                     return;
                 }
-                if (userToEdit.fk_UserRoleID == 0)
+                if (updatedUser.fk_UserRoleID == 0)
                 {
-                    errorMessage = "Selecteer een rol voor de gebruiker.";
+                    Snackbar.Add("Selecteer een rol voor de gebruiker!", Severity.Error);
                     return;
                 }
-                DbContext.Users.Update(userToEdit);
+
+                DbContext.Users.Update(updatedUser); // Gebruik het bijgewerkte object direct
                 await DbContext.SaveChangesAsync();
-                Navigation.NavigateTo("/userOverview");
+                users = await DbContext.Users
+                    .Include(u => u.Role)
+                    .ToListAsync(); // Verfris de lijst met gebruikers
+                Snackbar.Add("Medewerker gewijzigd!", Severity.Success);
             }
             catch (Exception ex)
             {

@@ -14,10 +14,11 @@ namespace Gimpies_Blazor1.Components.Pages.Dialogs
         [Parameter] public string ActionType { get; set; }
         [Parameter] public int Quantity { get; set; }
         [Parameter] public Shoe newShoe { get; set; }
-        [Parameter] public int shoeToDelete { get; set; }
+        [Parameter] public int? shoeToDelete { get; set; }
+        [Parameter] public Shoe shoeToEdit { get; set; }
         [Parameter] public User newUser { get; set; }
-        [Parameter] public int userToDelete { get; set; }
-        private string uploadedImageUrl { get; set; }
+        [Parameter] public int? userToDelete { get; set; }
+        [Parameter] public int userToEdit { get; set; }
 
 
 
@@ -30,22 +31,6 @@ namespace Gimpies_Blazor1.Components.Pages.Dialogs
             roles = await DbContext.Roles.ToListAsync();
         }
 
-        private async Task HandleFileSelected(InputFileChangeEventArgs e)
-        {
-            // Upload bestand en sla de URL op
-            var uploadedFile = e.File;
-            if (uploadedFile != null)
-            {
-                // Simuleer een URL na uploaden (je kunt dit vervangen door je eigen uploadlogica)
-                uploadedImageUrl = $"https://example.com/uploads/{uploadedFile.Name}";
-
-                // Koppel de geüploade URL aan de nieuwe schoen
-                if (newShoe != null)
-                {
-                    newShoe.ImageUrl = uploadedImageUrl;
-                }
-            }
-        }
 
         private void Submit()
         {
@@ -57,31 +42,33 @@ namespace Gimpies_Blazor1.Components.Pages.Dialogs
 
             else if (newShoe != null)
             {
-                // Zorg ervoor dat de geüploade afbeelding wordt opgenomen
-                if (!string.IsNullOrEmpty(uploadedImageUrl))
-                {
-                    newShoe.ImageUrl = uploadedImageUrl;
-                }
-
                 MudDialogInstance.Close(DialogResult.Ok(newShoe));
             }
 
-            else if (shoeToDelete != null)
+            else if (shoeToDelete.HasValue)
             {
-                MudDialogInstance.Close(DialogResult.Ok(shoeToDelete));
+                MudDialogInstance.Close(DialogResult.Ok(shoeToDelete.Value));
 
             }
             else if (Shoe != null)
             {
                 MudDialogInstance.Close(DialogResult.Ok(Shoe));
             }
+            else if (shoeToEdit != null)
+            {
+                MudDialogInstance.Close(DialogResult.Ok(shoeToEdit));
+            }
             else if (newUser != null)
             {
                 MudDialogInstance.Close(DialogResult.Ok(newUser));
             }
-            else if (userToDelete != null)
+            else if (userToDelete.HasValue)
             {
-                MudDialogInstance.Close(DialogResult.Ok(userToDelete));
+                MudDialogInstance.Close(DialogResult.Ok(userToDelete.Value));
+            }
+            else if (userToEdit != null)
+            {
+                MudDialogInstance.Close(DialogResult.Ok(userToEdit));
             }
             else
             {

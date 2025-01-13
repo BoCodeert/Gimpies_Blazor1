@@ -1,77 +1,24 @@
 ﻿@using Gimpies_Blazor1.Database.Models.Entities
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Gimpies_Blazor1</a>
-    </div>
-</div>
-
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-
-        <AuthorizeView Policy="@UserPolicy.View_Shoes">
-            <Authorized>
-            <div class="nav-item px-3">
-                <NavLink class="nav-link" href="shoeOverview">
-                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Schoenenoverzicht
-                </NavLink>
-            </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Policy="@UserPolicy.View_Users">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="userOverview">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Medewerkers
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Policy="@UserPolicy.Sell_Shoes">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="SellShoes">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Schoenen verkopen
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Policy="@UserPolicy.Buy_Shoes">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="BuyShoes">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Schoenen inkopen
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Policy="@UserPolicy.Add_Users">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="SalesOverview">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Verkoopoverzicht
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-    </nav>
-</div>
+<MudNavMenu>
+        <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.House">Home</MudNavLink>
+    <AuthorizeView Policy="@UserPolicy.View_Shoes">     
+            <MudNavLink Href="/shoeOverview" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.LibraryBooks">Schoenenoverzicht</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Policy="@UserPolicy.View_Users">
+            <MudNavLink Href="/userOverview" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Groups">Medewerkers</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView Policy="@UserPolicy.Add_Users">
+            <MudNavLink Href="/salesOverview" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Euro">Verkoopoverzicht</MudNavLink>
+    </AuthorizeView>
+    <AuthorizeView>
+        <Authorized>
+                <MudNavLink Href="/logout" Icon="@Icons.Material.Filled.PersonRemove">Logout</MudNavLink>
+        </Authorized>
+        <NotAuthorized>
+                <MudNavLink Href="/login" Icon="@Icons.Material.Filled.PersonAdd">Login</MudNavLink>            
+        </NotAuthorized>
+    </AuthorizeView>
+</MudNavMenu>
 
 
