@@ -2,7 +2,6 @@ using Gimpies_Blazor1.Components.Pages.Dialogs;
 using Gimpies_Blazor1.Database.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
-using static MudBlazor.Colors;
 
 namespace Gimpies_Blazor1.Components.Pages.Admin
 {
@@ -12,7 +11,6 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
         private User userToDelete;
         private User userToEdit;
         private User newUser = new User();
-        private string? errorMessage;
         private List<Role> roles;
 
         protected override async Task OnInitializedAsync()
@@ -48,12 +46,12 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
                     u.Username == newUser.Username);
                 if (duplicate)
                 {
-                    errorMessage = "Een gebruiker met dezelfde gebruikersnaam bestaat al.";
+                    Snackbar.Add("Een gebruiker met dezelfde gebruikersnaam bestaat al.", Severity.Warning);
                     return;
                 }
                 if (newUser.fk_UserRoleID == 0)
                 {
-                    errorMessage = "Selecteer een rol voor de gebruiker.";
+                    Snackbar.Add("Selecteer een rol voor de gebruiker.", Severity.Warning);
                     return;
                 }
 
@@ -64,7 +62,7 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
             }
             catch (Exception ex)
             {
-                errorMessage = $"Er is een fout opgetreden: {ex.Message}";
+                Snackbar.Add($"Er is een fout opgetreden: {ex.Message}", Severity.Error);
             }
         }
 
@@ -87,7 +85,6 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
             if (!result.Canceled)
             {
                 var updatedUser = result.Data as User; // Als je de userId ontvangt als resultaat
-                //var updatedUser = await DbContext.Users.FindAsync(userId); // Haal het volledige User object op
                 if (updatedUser != null)
                 {
                     await HandleEditUser(updatedUser);
@@ -121,7 +118,7 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
             }
             catch (Exception ex)
             {
-                errorMessage = $"Er is een fout opgetreden: {ex.Message}";
+                Snackbar.Add($"Er is een fout opgetreden: {ex.Message}", Severity.Error);
             }
         }
 
@@ -142,14 +139,14 @@ namespace Gimpies_Blazor1.Components.Pages.Admin
             if (!result.Canceled) // Verwijder de medewerker als de gebruiker bevestigt
             {
                 await DeleteUser(userToDelete);
-        }
+            }
         }
         private async Task DeleteUser(User userToDelete)
         {
             DbContext.Users.Remove(userToDelete);
             await DbContext.SaveChangesAsync();
             users = await DbContext.Users
-                .Include(u => u.Role) 
+                .Include(u => u.Role)
                 .ToListAsync(); // Verfris de lijst met medewerkers na verwijderen
         }
     }

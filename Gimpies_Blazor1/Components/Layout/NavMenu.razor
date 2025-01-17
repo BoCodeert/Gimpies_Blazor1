@@ -1,6 +1,6 @@
 ﻿@using Gimpies_Blazor1.Database.Models.Entities
 
-<MudNavMenu>
+<MudNavMenu Color="Color.Dark">
         <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.House">Home</MudNavLink>
     <AuthorizeView Policy="@UserPolicy.View_Shoes">     
             <MudNavLink Href="/shoeOverview" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.LibraryBooks">Schoenenoverzicht</MudNavLink>

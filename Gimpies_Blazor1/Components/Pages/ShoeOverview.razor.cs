@@ -165,7 +165,7 @@ namespace Gimpies_Blazor1.Components.Pages
 
             if (quantity > shoe.Unit)
             {
-                Snackbar.Add($"Er zijn niet genoeg schoenen op voorraad. Er zijn slechts {shoe.Unit} paar schoenen beschikbaar.", Severity.Error);
+                Snackbar.Add($"Er zijn niet genoeg schoenen op voorraad. Er zijn slechts {shoe.Unit} paar schoenen beschikbaar.", Severity.Warning);
                 return;
             }
 
@@ -330,9 +330,9 @@ namespace Gimpies_Blazor1.Components.Pages
                 }
                 catch (Exception ex)
                 {
-                    errorMessage = $"Er is een fout opgetreden bij het bijwerken: {ex.Message}";
-                }
+                Snackbar.Add($"Er is een fout opgetreden: {ex.Message}", Severity.Error);
             }
+        }
 
 
         private string GetStockClass(int unit)

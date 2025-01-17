@@ -13,7 +13,6 @@
 
 <h3>Gebruikersoverzicht</h3>
 
-
 <AuthorizeView Policy="@UserPolicy.View_Users">
     <ChildContent>
 
@@ -37,7 +36,6 @@
                 <thead>
                     <tr>
                         <th>Gebruikersnaam</th>
-                        <th>Wachtwoord</th>
                         <th>Rol</th>
                         <AuthorizeView Policy="@UserPolicy.Edit_Users">
                             <ChildContent Context="editUserContext">
@@ -56,7 +54,6 @@
                     {
                         <tr>
                             <td>@user.Username</td>
-                            <td>@user.PasswordHashed</td>
                             <td>@user.Role.RoleName</td>
                             <AuthorizeView Policy="@UserPolicy.Edit_Users">
                                 <ChildContent Context="editUserContext">
