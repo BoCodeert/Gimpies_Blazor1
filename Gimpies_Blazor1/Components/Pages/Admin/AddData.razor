@@ -1,0 +1,60 @@
+﻿@page "/addData"
+
+@using Gimpies_Blazor1.Database.Models.Entities
+@using Gimpies_Blazor1.Database.Data
+@using Microsoft.EntityFrameworkCore
+@using MudBlazor.Charts
+@inject ApplicationDbContext DbContext
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@rendermode InteractiveServer
+
+
+
+<AuthorizeView Policy="@UserPolicy.Add_Users">
+    <ChildContent>
+
+        <MudPaper Class="p-4" Elevation="4">
+            <MudTabs>
+                <MudTabPanel Text="Merk toevoegen">
+                    <MudForm @ref="brandForm" OnValidSubmit="AddBrand">
+                        <MudTextField @bind-Value="newBrandName" Label="Merk" Required="true" />
+                        <MudButton Color="Color.Primary" @onclick="AddBrand" Type="Submit" Variant="Variant.Filled">Opslaan</MudButton>
+                    </MudForm>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Model toevoegen">
+                    <MudForm @ref="modelForm" OnValidSubmit="AddModel">
+                        <MudTextField @bind-Value="newModelName" Label="Model" Required="true" />
+                        <MudButton Color="Color.Primary" @onclick="AddModel" Type="Submit" Variant="Variant.Filled">Opslaan</MudButton>
+                    </MudForm>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Kleur toevoegen">
+                    <MudForm @ref="colourForm" OnValidSubmit="AddColour">
+                        <MudTextField @bind-Value="newColourName" Label="Kleur" Required="true" />
+                        <MudButton Color="Color.Primary" @onclick="AddColour" Type="Submit" Variant="Variant.Filled">Opslaan</MudButton>
+                    </MudForm>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Maat toevoegen">
+                    <MudForm @ref="sizeForm" OnValidSubmit="AddSize">
+                        <MudNumericField @bind-Value="newSizeValue" Label="Maat" T="decimal" Required="true" Min="34" Max="50" Step="0.5m" />
+                        <MudButton Color="Color.Primary" @onclick="AddSize" Type="Submit" Variant="Variant.Filled">Opslaan</MudButton>
+                    </MudForm>
+                </MudTabPanel>
+
+
+            </MudTabs>
+        </MudPaper>
+
+
+
+
+    </ChildContent>
+
+
+</AuthorizeView>
+
+

@@ -8,6 +8,10 @@ namespace Gimpies_Blazor1.Components.Pages
     public partial class ShoeOverview
     {
         private List<Shoe> shoes;
+        private List<Brand> brands;
+        private List<Model> models;
+        private List<Colour> colours;
+        private List<Database.Models.Entities.Size> sizes;
         private string? errorMessage;
         private Shoe shoeToDelete;
         private Shoe shoeToEdit;  // De instantie van Shoe die bewerkt moet worden
@@ -21,6 +25,15 @@ namespace Gimpies_Blazor1.Components.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            await LoadShoes();
+            await LoadBrands();
+            await LoadModels();
+            await LoadColours();
+            await LoadSizes();
+        }
+
+        private async Task LoadShoes()
+        {
             shoes = await DbContext.Shoes
                 .Where(s => s.isActive)
                 .Include(s => s.Brand)
@@ -28,6 +41,26 @@ namespace Gimpies_Blazor1.Components.Pages
                 .Include(s => s.Colour)
                 .Include(s => s.Size)
                 .ToListAsync();
+        }
+
+        private async Task LoadBrands()
+        {
+            brands = await DbContext.Brands.ToListAsync();
+        }
+
+        private async Task LoadModels()
+        {
+            models = await DbContext.Models.ToListAsync();
+        }
+
+        private async Task LoadColours()
+        {
+            colours = await DbContext.Colours.ToListAsync();
+        }
+
+        private async Task LoadSizes()
+        {
+            sizes = await DbContext.Sizes.ToListAsync();
         }
 
         private async Task OpenAddShoeDialog()
@@ -236,105 +269,103 @@ namespace Gimpies_Blazor1.Components.Pages
             }
         }
 
-            private async Task OpenEditShoeDialog(Shoe shoe)
-            {
-                shoeToEdit = shoe;
+        private async Task OpenEditShoeDialog(Shoe shoe)
+        {
+            shoeToEdit = shoe;
 
-                var parameters = new DialogParameters
+            var parameters = new DialogParameters
                 {
                     { "shoeToEdit", shoeToEdit },
                     { "ActionType", "EditShoe" },
                     { "ButtonText", "Bewerken" }
                 };
 
-                var options = new DialogOptions { CloseButton = true, FullWidth = true };
-                var dialog = DialogService.Show<ConfirmDialog>("Schoenen bewerken", parameters);
-                var result = await dialog.Result;
+            var options = new DialogOptions { CloseButton = true, FullWidth = true };
+            var dialog = DialogService.Show<ConfirmDialog>("Schoenen bewerken", parameters);
+            var result = await dialog.Result;
 
-                if (!result.Canceled)
-                {
-
-                    // Controleer wat er wordt teruggegeven: Shoe of ID?
-                    if (result.Data is Shoe editedShoe)
-                    {
-                        await HandleEditShoe(editedShoe); // Gebruik een unieke naam hier
-                    }
-                    else if (result.Data is int shoeId) // Als alleen een ID wordt geretourneerd
-                    {
-                        var existingShoe = await DbContext.Shoes
-                            .Include(s => s.Brand)
-                            .Include(s => s.Model)
-                            .Include(s => s.Colour)
-                            .Include(s => s.Size)
-                            .FirstOrDefaultAsync(s => s.ShoeId == shoeId);
-
-                        if (existingShoe != null)
-                        {
-                            await HandleEditShoe(existingShoe); // Geen conflict met unieke naam
-                        }
-                    }
-                }
-            }
-
-            private async Task HandleEditShoe(Shoe existingShoe)
+            if (!result.Canceled)
             {
-                try
+
+                // Controleer wat er wordt teruggegeven: Shoe of ID?
+                if (result.Data is Shoe editedShoe)
                 {
-                    var duplicate = await DbContext.Shoes.AnyAsync(s =>
-                        s.Brand.BrandName.Replace(" ", "") == existingShoe.Brand.BrandName.Replace(" ", "") &&
-                        s.Model.ModelName.Replace(" ", "") == existingShoe.Model.ModelName.Replace(" ", "") &&
-                        s.Colour.ColourName.Replace(" ", "") == existingShoe.Colour.ColourName.Replace(" ", "") &&
-                        s.Size.SizeValue.ToString().Replace(" ", "") == existingShoe.Size.SizeValue.ToString().Replace(" ", "") &&
-                        s.ShoeId != existingShoe.ShoeId); // Zorg dat het duplicaat een ander ID heeft
-
-                    if (duplicate)
-                    {
-                        var existingDuplicateShoe = await DbContext.Shoes.FirstOrDefaultAsync(s =>
-                            s.Brand.BrandName == existingShoe.Brand.BrandName &&
-                            s.Model.ModelName == existingShoe.Model.ModelName &&
-                            s.Colour.ColourName == existingShoe.Colour.ColourName &&
-                            s.Size.SizeValue == existingShoe.Size.SizeValue &&
-                            s.ShoeId != existingShoe.ShoeId);
-
-                        if (existingDuplicateShoe != null && !existingDuplicateShoe.isActive)
-                        {
-                            existingDuplicateShoe.isActive = true;
-                            DbContext.Update(existingDuplicateShoe);
-                            await DbContext.SaveChangesAsync();
-                            shoes = await DbContext.Shoes
-                                .Where(s => s.isActive)
-                                .Include(s => s.Brand)
-                                .Include(s => s.Model)
-                                .Include(s => s.Colour)
-                                .Include(s => s.Size)
-                                .ToListAsync();
-
-                            Snackbar.Add("Schoen geheractiveerd!", Severity.Success);
-                            return;
-                        }
-
-                        Snackbar.Add("Een schoen met dezelfde specificaties bestaat al!", Severity.Error);
-                        return;
-                    }
-                    DbContext.Update(existingShoe);
-                    await DbContext.SaveChangesAsync();
-                    shoes = await DbContext.Shoes
-                        .Where(s => s.isActive)
+                    await HandleEditShoe(editedShoe); // Gebruik een unieke naam hier
+                }
+                else if (result.Data is int shoeId) // Als alleen een ID wordt geretourneerd
+                {
+                    var existingShoe = await DbContext.Shoes
                         .Include(s => s.Brand)
                         .Include(s => s.Model)
                         .Include(s => s.Colour)
                         .Include(s => s.Size)
-                        .ToListAsync();
+                        .FirstOrDefaultAsync(s => s.ShoeId == shoeId);
 
-                    Snackbar.Add("Schoen succesvol bijgewerkt!", Severity.Success);
+                    if (existingShoe != null)
+                    {
+                        await HandleEditShoe(existingShoe); // Geen conflict met unieke naam
+                    }
                 }
-                catch (Exception ex)
-                {
-                Snackbar.Add($"Er is een fout opgetreden: {ex.Message}", Severity.Error);
             }
         }
 
+        private async Task HandleEditShoe(Shoe existingShoe)
+        {
+            try
+            {
+                var duplicate = await DbContext.Shoes.AnyAsync(s =>
+                    s.Brand.BrandName.Replace(" ", "") == existingShoe.Brand.BrandName.Replace(" ", "") &&
+                    s.Model.ModelName.Replace(" ", "") == existingShoe.Model.ModelName.Replace(" ", "") &&
+                    s.Colour.ColourName.Replace(" ", "") == existingShoe.Colour.ColourName.Replace(" ", "") &&
+                    s.Size.SizeValue.ToString().Replace(" ", "") == existingShoe.Size.SizeValue.ToString().Replace(" ", "") &&
+                    s.ShoeId != existingShoe.ShoeId); // Zorg dat het duplicaat een ander ID heeft
 
+                if (duplicate)
+                {
+                    var existingDuplicateShoe = await DbContext.Shoes.FirstOrDefaultAsync(s =>
+                        s.Brand.BrandName == existingShoe.Brand.BrandName &&
+                        s.Model.ModelName == existingShoe.Model.ModelName &&
+                        s.Colour.ColourName == existingShoe.Colour.ColourName &&
+                        s.Size.SizeValue == existingShoe.Size.SizeValue &&
+                        s.ShoeId != existingShoe.ShoeId);
+
+                    if (existingDuplicateShoe != null && !existingDuplicateShoe.isActive)
+                    {
+                        existingDuplicateShoe.isActive = true;
+                        DbContext.Update(existingDuplicateShoe);
+                        await DbContext.SaveChangesAsync();
+                        shoes = await DbContext.Shoes
+                            .Where(s => s.isActive)
+                            .Include(s => s.Brand)
+                            .Include(s => s.Model)
+                            .Include(s => s.Colour)
+                            .Include(s => s.Size)
+                            .ToListAsync();
+
+                        Snackbar.Add("Schoen geheractiveerd!", Severity.Success);
+                        return;
+                    }
+
+                    Snackbar.Add("Een schoen met dezelfde specificaties bestaat al!", Severity.Error);
+                    return;
+                }
+                DbContext.Update(existingShoe);
+                await DbContext.SaveChangesAsync();
+                shoes = await DbContext.Shoes
+                    .Where(s => s.isActive)
+                    .Include(s => s.Brand)
+                    .Include(s => s.Model)
+                    .Include(s => s.Colour)
+                    .Include(s => s.Size)
+                    .ToListAsync();
+
+                Snackbar.Add("Schoen succesvol bijgewerkt!", Severity.Success);
+            }
+            catch (Exception ex)
+            {
+                Snackbar.Add($"Er is een fout opgetreden: {ex.Message}", Severity.Error);
+            }
+        }
         private string GetStockClass(int unit)
         {
             if (unit == 0)

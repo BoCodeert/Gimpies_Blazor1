@@ -24,18 +24,115 @@
         }
         else if (ActionType == "AddShoe")
         {
-            <MudTextField @bind-Value="newShoe.Brand.BrandName" Label="Merk" required="true" />
-            <MudTextField @bind-Value="newShoe.Model.ModelName" Label="Model" required="true" />
-            <MudTextField @bind-Value="newShoe.Colour.ColourName" Label="Kleur" required="true" />
-            <MudNumericField @bind-Value="newShoe.Size.SizeValue" Label="Maat" T="decimal" required="true" Min="34" Max="50" Step="0.5m" />
+
+            <MudSelect @bind-Value="newShoe.Brand.BrandName" Label="Brand" Required="true">
+                @if (brands == null || brands.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Merknamen laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var brand in brands)
+                    {
+                        <MudSelectItem Value="brand.BrandName">@brand.BrandName</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudSelect @bind-Value="newShoe.Model.ModelName" Label="Model" Required="true">
+                @if (models == null || models.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Modellen laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var model in models)
+                    {
+                        <MudSelectItem Value="model.ModelName">@model.ModelName</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudSelect @bind-Value="newShoe.Colour.ColourName" Label="Colour" Required="true">
+                @if (colours == null || colours.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Kleuren laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var colour in colours)
+                    {
+                        <MudSelectItem Value="colour.ColourName">@colour.ColourName</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudSelect @bind-Value="newShoe.Size.SizeValue" Label="Size" Required="true">
+                @if (sizes == null || sizes.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Maten laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var size in sizes)
+                    {
+                        <MudSelectItem Value="size.SizeValue">@size.SizeValue</MudSelectItem>
+                    }
+                }
+            </MudSelect>
             <MudNumericField @bind-Value="newShoe.Value" Label="Prijs (€)" T="decimal" required="true" Min="0" Step="0.001m" />
         }
         else if (ActionType == "EditShoe")
         {
-            <MudTextField @bind-Value="shoeToEdit.Brand.BrandName" Label="Merk" Required="true" />
-            <MudTextField @bind-Value="shoeToEdit.Model.ModelName" Label="Model" Required="true" />
-            <MudTextField @bind-Value="shoeToEdit.Colour.ColourName" Label="Kleur" Required="true" />
-            <MudNumericField @bind-Value="shoeToEdit.Size.SizeValue" Label="Maat" T="decimal" Required="true" Min="34" Max="50" Step="0.5m" />
+            <MudSelect @bind-Value="shoeToEdit.Brand.BrandName" Label="Merk" Required="true">
+                @if (brands == null || brands.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Merknamen laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var brand in brands)
+                    {
+                        <MudSelectItem Value="brand.BrandName">@brand.BrandName</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudSelect @bind-Value="shoeToEdit.Model.ModelName" Label="Model" Required="true">
+                @if (models == null || models.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Modellen laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var model in models)
+                    {
+                        <MudSelectItem Value="model.ModelName">@model.ModelName</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudSelect @bind-Value="shoeToEdit.Colour.ColourName" Label="Kleur" Required="true">
+                @if (colours == null || colours.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Kleuren laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var colour in colours)
+                    {
+                        <MudSelectItem Value="colour.ColourName">@colour.ColourName</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+            <MudSelect @bind-Value="shoeToEdit.Size.SizeValue" Label="Maat" Required="true">
+                @if (sizes == null || sizes.Count == 0)
+                {
+                    <MudText Typo="Typo.h6">Maten laden...</MudText>
+                }
+                else
+                {
+                    @foreach (var size in sizes)
+                    {
+                        <MudSelectItem Value="size.SizeValue">@size.SizeValue</MudSelectItem>
+                    }
+                }
+            </MudSelect>
             <MudNumericField @bind-Value="shoeToEdit.Value" Label="Prijs (€)" T="decimal" Required="true" Min="0" Step="0.001m" />
         }
         else if (ActionType == "AddUser")

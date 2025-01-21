@@ -3,6 +3,9 @@ using Gimpies_Blazor1.Database.Models.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor;
+using static MudBlazor.Colors;
+using static MudBlazor.Icons.Custom;
+using System.Drawing;
 
 namespace Gimpies_Blazor1.Components.Pages.Dialogs
 {
@@ -22,10 +25,51 @@ namespace Gimpies_Blazor1.Components.Pages.Dialogs
         [CascadingParameter] MudDialogInstance MudDialogInstance { get; set; } // Gebruik MudDialogInstance
 
         private List<Role> roles;
+                private List<Shoe> shoes;
+        private List<Brand> brands;
+        private List<Model> models;
+        private List<Colour> colours;
+        private List<Database.Models.Entities.Size> sizes;
 
         protected override async Task OnInitializedAsync()
         {
             roles = await DbContext.Roles.ToListAsync();
+            await LoadShoes();
+            await LoadBrands();
+            await LoadModels();
+            await LoadColours();
+            await LoadSizes();
+        }
+
+        private async Task LoadShoes()
+        {
+            shoes = await DbContext.Shoes
+                .Where(s => s.isActive)
+                .Include(s => s.Brand)
+                .Include(s => s.Model)
+                .Include(s => s.Colour)
+                .Include(s => s.Size)
+            .ToListAsync();
+        }
+
+        private async Task LoadBrands()
+        {
+            brands = await DbContext.Brands.ToListAsync();
+        }
+
+        private async Task LoadModels()
+        {
+            models = await DbContext.Models.ToListAsync();
+        }
+
+        private async Task LoadColours()
+        {
+            colours = await DbContext.Colours.ToListAsync();
+        }
+
+        private async Task LoadSizes()
+        {
+            sizes = await DbContext.Sizes.ToListAsync();
         }
 
         private void Submit()
